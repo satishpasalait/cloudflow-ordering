@@ -1,3 +1,5 @@
+using CloudFlow.Ordering.Domain.Entities;
+
 namespace CloudFlow.Ordering.Domain.Repositories;
 
 public interface IOrderRepository
