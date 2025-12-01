@@ -29,9 +29,16 @@ module sql './sql.bicep' = {
     }
 }
 
-output sqlServerName string = sql.outputs.sqlServerName
-output sqlDatabaseName string = sql.outputs.sqlDbName
-
+//
+// Applicaiton Insights
+//
+module appInsights './appinsights.bicep' = {
+    name: 'appInsightsModule'
+    params: {
+        location: location
+        baseName: namePrefix
+    }
+}
 
 
 //
@@ -52,3 +59,24 @@ module keyVault './keyvault.bicep' = {
         sqlConnectionString: sqlConnectionString
     }
 }
+
+//
+// App Service Plan + Web App
+//
+module appService './appservice.bicep' = {
+    name: 'appServiceModule'
+    params: {
+        location: location
+        baseName: namePrefix
+        appInsightsConnectionString: appInsights.outputs.connectionString
+        sqlConnectionSecretUri: keyVault.outputs.sqlConnectionSecretUri
+        skuName: 'S1'
+        skuTier: 'Standard'
+    }
+}
+
+output webAppUrl string = 'https://${appService.outputs.webAppName}.azurewebsites.net'
+output webAppName string = appService.outputs.webAppName
+output keyVaultName string = keyVault.outputs.keyValultName
+output sqlServerName string = sql.outputs.sqlServerName
+output sqlDatabaseName string = sql.outputs.sqlDbName
