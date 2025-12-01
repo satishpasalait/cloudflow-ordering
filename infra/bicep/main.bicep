@@ -31,3 +31,24 @@ module sql './sql.bicep' = {
 
 output sqlServerName string = sql.outputs.sqlServerName
 output sqlDatabaseName string = sql.outputs.sqlDbName
+
+
+
+//
+// Build SQL connection string to store in Key Vault
+//
+var sqlConnectionString = 'Server=tcp:${sql.outputs.sqlFqdn},1433;Initial Catalog=${sql.outputs.sqlDbName};Persist Security Info=False;User ID=${sqlAdminLogin};Password=${sqlAdminPassword};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;'
+
+
+//
+// Key Vault (stores SQL connection string as secret)
+//
+module keyVault './keyvault.bicep' = {
+    name: 'keyVaultModule'
+    params: {
+        location: location
+        keyVaultName: toLower('${namePrefix}-kv')
+        sqlConnectionSecretName: 'SqlConnectionString'
+        sqlConnectionString: sqlConnectionString
+    }
+}
