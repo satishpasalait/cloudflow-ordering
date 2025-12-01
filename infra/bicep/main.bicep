@@ -19,3 +19,15 @@ var namePrefix = '${baseName}-${environment}'
 //
 // SQL Server + Database
 //
+module sql './sql.bicep' = {
+    name: 'sqlModule'
+    params: {
+        location: location
+        baseName: namePrefix
+        sqlAdminLogin: sqlAdminLogin
+        sqlAdminPassword: sqlAdminPassword
+    }
+}
+
+output sqlServerName string = sql.outputs.sqlServerName
+output sqlDatabaseName string = sql.outputs.sqlDbName

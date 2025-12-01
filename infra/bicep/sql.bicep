@@ -19,7 +19,7 @@ resource sqlServer 'Microsoft.Sql/servers@2024-11-01-preview' = {
   }
 }
 
-resource sqlDatabase 'Microsoft.Sql/servers/database@2024-11-01-preview' = {
+resource sqlDatabase 'Microsoft.Sql/servers/databases@2024-11-01-preview' = {
   name: '${sqlServer.name}/${sqlDBName}'
   location: location
   properties: {
